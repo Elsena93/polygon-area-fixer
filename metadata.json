@@ -1,0 +1,5 @@
+{
+  "name": "Sena's Polygon Tool",
+  "description": "Alat WebGIS khusus bagi orang awam untuk mendigitasi poligon pada citra Satelit Google, melakukan penyesuaian berbasis luas, dan mengekspor ke Shapefile.",
+  "requestFramePermissions": []
+}
