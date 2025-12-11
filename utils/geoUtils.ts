@@ -13,13 +13,33 @@ const toTurfPolygon = (points: Coordinate[]) => {
   return turf.polygon([coordinates]);
 };
 
+// Calculate planar area using Shoelace formula
+const calculatePlanarArea = (ring: number[][]): number => {
+  let area = 0;
+  if (ring.length < 3) return 0;
+  
+  for (let i = 0; i < ring.length - 1; i++) {
+    area += ring[i][0] * ring[i + 1][1] - ring[i + 1][0] * ring[i][1];
+  }
+  
+  return Math.abs(area) / 2.0;
+};
+
 export const calculateArea = (points: Coordinate[]): number => {
   const polygon = toTurfPolygon(points);
   if (!polygon) return 0;
-  return turf.area(polygon); // Returns area in square meters
+
+  // Project WGS84 (Lat/Lng) to Web Mercator (EPSG:3857) in Meters
+  // This satisfies the requirement for area to be measured on auxiliary Mercator (3857)
+  const projected = turf.toMercator(polygon);
+
+  // Calculate planar area on the projected coordinates
+  // turf.area() is for geodesic (WGS84), so we use a custom planar function
+  return calculatePlanarArea(projected.geometry.coordinates[0]);
 };
 
 export const scalePolygonToArea = (points: Coordinate[], targetAreaSqM: number): Coordinate[] => {
+  // calculateArea now returns the EPSG:3857 area
   const currentArea = calculateArea(points);
   if (currentArea === 0 || targetAreaSqM <= 0) return points;
 
@@ -31,6 +51,9 @@ export const scalePolygonToArea = (points: Coordinate[], targetAreaSqM: number):
   const factor = Math.sqrt(targetAreaSqM / currentArea);
   
   const centroid = turf.centroid(polygon);
+  
+  // We apply the scaling to the WGS84 polygon using the factor derived from 3857 area ratio.
+  // This preserves the WGS84 shape characteristics while adjusting the size.
   const scaled = turf.transformScale(polygon, factor, { origin: centroid });
   
   // Convert back to Coordinate objects
