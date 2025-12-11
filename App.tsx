@@ -4,6 +4,7 @@ import { Coordinate } from './types';
 import { calculateArea, scalePolygonToArea, formatArea } from './utils/geoUtils';
 import { generateShapefileZip } from './utils/shapefileUtils';
 import { 
+  Map as MapIcon,
   PenTool, 
   Trash2, 
   Download, 
@@ -152,12 +153,7 @@ function App() {
       <div className="w-96 flex-shrink-0 flex flex-col border-r border-gray-800 bg-gray-900 z-10 shadow-2xl">
         <div className="p-6 border-b border-gray-800 flex items-center gap-3">
           <div className="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-500/30">
-            {/* Surya Majapahit Icon - Inverted to white */}
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/e/e0/Surya_Majapahit.svg" 
-              alt="Surya Majapahit" 
-              className="w-8 h-8 object-contain invert"
-            />
+            <MapIcon className="w-6 h-6 text-white" />
           </div>
           <div>
             <h1 className="text-xl font-bold tracking-tight text-white">Sena's Polygon Tool</h1>
