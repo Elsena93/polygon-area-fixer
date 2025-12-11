@@ -6,12 +6,14 @@ export default defineConfig({
   plugins: [react()],
   base: './', 
   build: {
+    target: 'esnext', // Ensure modern JS output that uses native imports
     outDir: 'dist',
     rollupOptions: {
-      // CRITICAL: Tell Vite to ignore these imports during build/serve
-      // and assume they exist in the browser (via index.html importmap)
+      // Externalize dependencies so Vite leaves the imports alone
+      // and let the browser's Import Map handle them.
       external: [
         'react',
+        'react/jsx-runtime',
         'react-dom',
         'react-dom/client',
         'leaflet',
@@ -22,7 +24,6 @@ export default defineConfig({
       ]
     }
   },
-  // Also optimizeDeps exclusion for dev server
   optimizeDeps: {
     exclude: [
       'react',
